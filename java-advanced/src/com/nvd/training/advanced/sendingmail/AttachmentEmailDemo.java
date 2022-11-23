@@ -63,6 +63,6 @@ public class AttachmentEmailDemo {
                     }
                 });
 
-		sendEmail(session, emailID, "Hello Louis Nguyen Ba", "<b> Bất ngờ chưa bà zà!!! <b>");
+		sendEmail(session, emailID, "Hello Louis Nguyen Ba", "<b> Bất ngờ chưa bà zà !!! <b>");
 	}
 }
