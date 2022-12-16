@@ -1,9 +1,16 @@
 package com.nvd.java8.streamapi;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.IntSummaryStatistics;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -33,6 +40,9 @@ import java.util.stream.Stream;
  *  Some creating Stream methods:
  *   - stream(): return a sequential stream
  *   - parallelStream(): return a parallel stream
+ *   
+ *   Limitations of stream:
+ *   - Stream cannot resued after called terminal operations
  */
 
 public class StreamExample {
@@ -254,6 +264,91 @@ public class StreamExample {
 		int result = IntStream.of(1,2,3,4).reduce(0, (a, b) -> a + b);
 		System.out.println(result);
 	}
+	
+	/* Stream API with I/O */
+	
+	public static void readFileWithStream() {
+		String fileName = "lines.txt";
+		try {
+			Stream<String> stream = Files.lines(Paths.get(fileName));
+			
+			stream.onClose(() -> System.out.println("close stream")) //
+			.filter(s -> s.startsWith("line3")) // filter and get strings start with line 3
+			.forEach(s -> System.out.print(s + " ")); // iterates the stream and print to the screen
+			System.out.println();
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/* Sequential stream and Parallel stream
+	 * We usually use Parallel stream in the Multiple threads environment where we need the highest performance process.
+	 * 
+	 */
+	
+	public static List<String> createDummyData() {
+        int max = 1000000;
+        List<String> values = new ArrayList<>(max);
+        for (int i = 0; i < max; i++) {
+            UUID uuid = UUID.randomUUID();
+            values.add(uuid.toString());
+        }
+        return values;
+    }
+	
+	public static void sequentialStream(List<String> values) {
+		 
+        long startTime = System.nanoTime();
+ 
+        long count = values.stream().sorted().count();
+        System.out.println(count);
+ 
+        long endTime = System.nanoTime();
+ 
+        System.out.println(endTime + "   " + startTime);
+        
+        long millis = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+ 
+        System.out.println(String.format("sequential sort took: %d ms", millis));
+     
+	}
+	
+	public static void parallelStream(List<String> values) {
+		 
+        long startTime = System.nanoTime();
+ 
+        long count = values.parallelStream().sorted().count();
+        System.out.println(count);
+ 
+        long endTime = System.nanoTime();
+ 
+        System.out.println(endTime + "   " + startTime);
+        
+        long millis = TimeUnit.NANOSECONDS.toMillis(endTime - startTime);
+ 
+        System.out.println(String.format("parallel sort took: %d ms", millis));
+	}
+	
+	/* Limitations of stream */
+	public static void limitationOfStream() {
+//		Stream<String> stream = Stream.of("Java", "C#", "C++", "PHP", "Javascript") //
+//                .filter(s -> s.startsWith("J"));
+// 
+//        stream.anyMatch(s -> true); // ok
+//        stream.noneMatch(s -> true); // exception
+		
+		/*
+		 * To fix above exception, we can create a new stream for activities of endpoint
+		 * that we want to process
+		 */
+		Supplier<Stream<String>> streamSupplier = //
+                () -> Stream.of("Java", "C#", "C++", "PHP", "Javascript") //
+                        .filter(s -> s.startsWith("J"));
+ 
+        streamSupplier.get().anyMatch(s -> true); // ok
+        streamSupplier.get().noneMatch(s -> true); // ok
+	}
 
 	public static void main(String[] args) {
 		/* Example 1 */
@@ -290,5 +385,16 @@ public class StreamExample {
 		minMaxObjectsStream();
 		summaryStatisticsStream();
 		reduceStream();
+		
+		/* Example 7 */
+		readFileWithStream();
+		
+		/* Example 8 */
+		List<String> values = createDummyData();
+		sequentialStream(values);
+		parallelStream(values);
+		
+		/* Example 9 */
+		limitationOfStream();
 	}
 }
