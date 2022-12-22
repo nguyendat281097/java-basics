@@ -1,4 +1,4 @@
-package com.nvd.training.designpatterns.singleton;
+package com.nvd.training.designpatterns.creational.singleton;
 
 import java.util.Random;
 

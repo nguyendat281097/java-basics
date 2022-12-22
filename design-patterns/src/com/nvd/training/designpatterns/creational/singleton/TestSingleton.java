@@ -1,6 +1,6 @@
-package com.nvd.training.designpatterns.singleton;
+package com.nvd.training.designpatterns.creational.singleton;
 
-public class UseSingleton {
+public class TestSingleton {
 	public static void main(String[] args) {
 		Thread thread1 = new Thread(new Runnable() {
 			
