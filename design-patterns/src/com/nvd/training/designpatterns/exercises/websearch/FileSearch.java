@@ -1,4 +1,4 @@
-package com.nvd.training.designpatterns.execises.websearch;
+package com.nvd.training.designpatterns.exercises.websearch;
 
 import java.io.IOException;
 import java.nio.file.Files;

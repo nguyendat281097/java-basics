@@ -1,4 +1,4 @@
-package com.nvd.training.designpatterns.execises.websearch;
+package com.nvd.training.designpatterns.exercises.websearch;
 
 import java.util.ArrayList;
 import java.util.List;

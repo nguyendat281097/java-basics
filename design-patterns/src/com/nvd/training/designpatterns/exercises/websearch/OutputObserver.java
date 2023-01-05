@@ -1,4 +1,4 @@
-package com.nvd.training.designpatterns.execises.websearch;
+package com.nvd.training.designpatterns.exercises.websearch;
 
 public abstract class OutputObserver {
 	protected Subject subject;
